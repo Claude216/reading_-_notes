@@ -1,4 +1,4 @@
-- {{H2O: Heavy-Hitter Oracle for Efficient GenerativeInference of Large Language Models}}
+- {H2O: Heavy-Hitter Oracle for Efficient GenerativeInference of Large Language Models}} + *
 
 - {{Minference 1.0: Accelerating pre-filling for long-context llms via dynamic sparse attention.}}
 
@@ -18,7 +18,7 @@
 
 - {{SnapKV: LLM Knows What You are Looking for Before Generation.}}
 
-- {{Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference.}}
+- {{Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference.}} + *
 
 - {{Mamba: Linear-time sequence modeling with selective state spaces}}
 
