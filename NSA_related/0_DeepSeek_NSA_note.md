@@ -105,20 +105,43 @@
      - methods like *H2O* apply sparsity during autoregressive decoding while requiring computationally intensive pre-processing (attention map calculation, index building) during prefilling. 
        
        - (*question*) H2O?
+         
+         - (answer) an algorithm to balance the *heavy-hitters* and *recent tokens* for an efficient attention without calculating redundantly  
        
        - (*question*) attention map calculation?
+         
+         - (*answer*) the process of computing the matrix of attention scores between all queries and keys in a transformer model. It determines ***how each token influences others***
        
        - (*question*) index building?
+         
+         - (*answer*) process of creating and maintaining auxiliary data structures that map which tokens or blocks in the KV cache are deemed "important" for attention computation. This strategy is applied in Quest and H$_2$O paper, but not in NSA as NSA integerates sparsity natively in to the architecture.
        
        - (*question*) prefilling? 
+         
+         - (*answer*) the initia phase that processes user input, generates KV cache.
      
      - approaches like Minference focus solely on prefilling sparsity. 
        
        - (*question*) why focusing solely on prefilling sparsity is not good enough?
+         
+         - (*answer*) Fail to address inefficiencies across the entire model lifecycle
+           
+           1. leaves decoding as a bottleneck.
+           
+           2. Hardware msialignment: Prefilling benefits from reducing FLOPS (compute-bound) while Decoding requires minimizing memory access (memory-bound)
+              
+              - NSA: blockwise compression to reduce FLOPS; groups queries by shared KV blocks to minimize HBM access.
+           
+           3- Prefilling-only may apply sparsity post-hoc which leads to a mismatch: models trained on full attention but use sparse patterns during inference.
+              
+              - NSA: trains sparsity end-to-end.
      
      - Above methods fail to achieve acceleration across **all inference stages** 
        
        - (*question*) how many phases are there? 
+       - (*answer*) Two:
+         - Prefilling 
+         - Decoding
    
    - **Incompatibility with Advanced Attention Architecture**
      
@@ -143,10 +166,16 @@
      - **Performance Degradation**: *Applying sparsity post-hoc forces models to deviate from their pretrained optimization trajectory*. 
        
        - (*question*) Applying sparsity post-hoc?
+         
+         - Model trained with standard full attention would obtain a degraded performance by applying sparsity post-hoc (after training)
        
        - (*question*) how this forces models to deivate? 
+         
+         - (*answer*) Full attention models learn to rely on all tokens during training. Removing tokens post-hoc disrupts learned patterns; post-hoc methods use handcrafted rules instead of a learned strategy; involvind non-differentiable operations (clustering, hash-based selection), which blocks gradient flow; irregular memory access leads to hardware inefficiency
        
        - (*question*) what does the "vulnerable" mean here when it comes to structures to pruning during inference? 
+         
+         - (*answer*) because the pruning heuristics (e.g., removing low-attention tokens or blocks) may inadvertently discard critical tokens or disrupt learned attention dependencies
      
      - **Training Efficiency Demands**: *Effificent handling of long-sequence training is crucial for modern LLM development*. 
        
@@ -235,6 +264,8 @@
       - $\~K_t^{cmp} \in \bold{\R}^{d_k \times \lfloor \frac {t-l} d \rfloor}$: tensor composed by compresion keys. 
     - Adopt $d < l$ to **mitigate info fragmentation** 
       - (*question*) why we want to mitigate information fragmentation? why making $d < l$ can achieve this?
+        - (*answer*) to preserve the continuity of contextual relationships across toke blocks. 
+        - (*answer*) d < l ensures **overlapping blocks** which means part of current block is overlapped with the content in another joint block to maintain the continuity. 
     - *Compressed representations capture **coarser-grained high-level semantic information** and reduce computational burden of attention* 
       - (*idea*) i am actually thinking about tree, like in a full attention, each token is like the leaf point, while now, NSA does things one or two level above the leaf point. 
 

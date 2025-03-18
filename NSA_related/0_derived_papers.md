@@ -1,12 +1,12 @@
 - {H2O: Heavy-Hitter Oracle for Efficient GenerativeInference of Large Language Models}} + *
 
-- {{Minference 1.0: Accelerating pre-filling for long-context llms via dynamic sparse attention.}}
+- {{Minference 1.0: Accelerating pre-filling for long-context llms via dynamic sparse attention.}} + *
 
-- {{Chainof-thought prompting elicits reasoning in large language models.}}
+- {{Chainof-thought prompting elicits reasoning in large language models.}} + 
 
-- {{Fast transformer decoding: One write-head is all you need.}}
+- {{Fast transformer decoding: One write-head is all you need.}} + 
 
-- {{GQA: Training Generalized Multi-Query Transformer Models fromMulti-Head Checkpoints.}}
+- {{GQA: Training Generalized Multi-Query Transformer Models fromMulti-Head Checkpoints.}} +
 
 - {{ClusterKV: Manipulating LLM KV Cache inSemantic Space for Recallable Compression.}}
 
@@ -26,7 +26,7 @@
 
 - {{Online normalizer calculation for softmax}}
 
-- {{Blockwise Parallel Transformer for Large Context Models}}
+- {{Blockwise Parallel Transformer for Large Context Models}} + 
 
 - {{Training compute-optimal large language models}}
 

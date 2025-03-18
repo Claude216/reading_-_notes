@@ -79,6 +79,14 @@ key question: seeking a general, highly efficient way of utilizing the sparse at
       - Combine the corresponding attention outputs using online Softmax (i.e., tiling), as a query token may attend to its current block and multiple historical KV blocks
       
       - (*question*) online softmax
+        
+        - (*answer*) make the two-pass computation of standard softmax to one-pass: updating both the **running maximum** and **a runing total of exponentials**. 
+          
+          - maintains stability by constantly adjusting the sum relative to the running maximum
+          
+          - one-pass 
+          
+          - no need to store the entire vector in memory if the values are being processed in a streaming fashion. 
 
 #### Experiments:
 
