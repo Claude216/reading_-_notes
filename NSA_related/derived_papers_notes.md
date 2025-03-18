@@ -153,10 +153,10 @@
   - Block-Sparse Pattern
 
 - A dynamic sparse mask for each head 
-
-
-
-
+  
+  
+  
+  
 
 ## Chain-of-Thought Prompting Elicits Reasoning in Large Language Models
 
@@ -167,3 +167,47 @@
 - No gaurantee on the correctness of CoT. 
 
 - How to make it appear on small models?
+  
+  
+  
+  
+
+## ClusterKV: Manipulating LLM KV Cache in Semantic Space for Recallable Compression
+
+- Non-recallable KV cache compression *greedily evicts tokens* based on positions or attention weights of tokens at hthe current decoding step, failing to capture the **dynamic feature**, which degrade model accuracy and output quality. 
+
+- Quest propose a way of recalling at the granularity of pages
+  
+  - unimportant tokens would waste budget in a page due to internal fragmentation.
+
+- ClusterKV: recall tokens at the granularity of token clusters in the semantic space (semantic clusters)
+  
+  - tokens that are close in their semantic space or key vector space exhibit **similar attention weights**
+
+- Observation: "tokens which are close in semantic space tend to have similar attention weights for a given $q$" 
+  
+  - KV selection at the grannularity of **semantic clusters** 
+  
+  - compute attention weights only with respect to the cluster representations (the centroids of clusters) rather than individual tokens.
+  
+  - Number of clusters is much smaller than the number of tokens.
+    
+    
+
+- Algo Design:
+
+- Semantic Distance: distance btween corresponding key vectors.
+  
+  - Cosine similarity
+
+- Always retrian the first 16 tokens and apply clustering to the subsequent tokens
+
+- centroids amount $C_0$ = $\frac{L}{80}$ where $L$ is the input prompt context length. (Right after prefilling stage)
+
+- applying clustering **within** the generated tokens from decoding stage only to reduce overhead.
+
+- distance between query and centroid
+  
+  -  inner product
+
+- retrieve the sorted centroids and collect KV of tokens from the corresponding clusters until top-B tokens are selected. 
